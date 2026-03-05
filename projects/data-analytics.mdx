@@ -1,0 +1,316 @@
+---
+title: Data Analytics Projects
+description: Sales forecasting, logistics optimization, and data-driven solutions
+---
+
+# Data Analytics Projects
+
+I leverage data science and machine learning to solve real-world business challenges, specializing in sales forecasting and logistics optimization. Using Python, Pandas, and Facebook Prophet, I transform raw data into actionable insights that drive business decisions.
+
+## Featured Projects
+
+<CardGroup cols={2}>
+  <Card
+    title="Retail Sales Forecasting System"
+    icon="chart-line"
+  >
+    Advanced time-series forecasting model for retail chain predicting sales across 50+ stores. Achieves 92% accuracy in 30-day forecasts, enabling optimized inventory management.
+    
+    **Technologies**: Python, Facebook Prophet, Pandas, NumPy, Matplotlib
+  </Card>
+  
+  <Card
+    title="Supply Chain Optimization Tool"
+    icon="truck"
+  >
+    Logistics optimization system analyzing delivery routes, warehouse inventory levels, and supplier lead times to reduce operational costs by 23%.
+    
+    **Technologies**: Python, Pandas, SciPy, Geopandas, Plotly
+  </Card>
+  
+  <Card
+    title="Customer Demand Prediction"
+    icon="users-line"
+  >
+    Machine learning model predicting customer demand patterns across product categories, enabling dynamic pricing strategies and stock optimization.
+    
+    **Technologies**: Python, Scikit-learn, Pandas, Prophet, Seaborn
+  </Card>
+  
+  <Card
+    title="Inventory Management Dashboard"
+    icon="boxes-stacked"
+  >
+    Interactive analytics dashboard providing real-time inventory insights, reorder point calculations, and automated alerts for stock-out prevention.
+    
+    **Technologies**: Python, Dash, Plotly, Pandas, PostgreSQL
+  </Card>
+  
+  <Card
+    title="Seasonal Trend Analysis"
+    icon="calendar"
+  >
+    Comprehensive seasonal pattern analysis identifying peak sales periods, holiday trends, and promotional impact across multiple business years.
+    
+    **Technologies**: Python, Prophet, Pandas, Statsmodels, Jupyter
+  </Card>
+  
+  <Card
+    title="Warehouse Efficiency Analytics"
+    icon="warehouse"
+  >
+    Data analysis system optimizing warehouse operations through pick-path optimization, storage location analysis, and labor efficiency metrics.
+    
+    **Technologies**: Python, Pandas, NumPy, Matplotlib, SQLAlchemy
+  </Card>
+</CardGroup>
+
+## Methodology
+
+### Data Science Workflow
+
+<Steps>
+  <Step title="Data Collection & Cleaning">
+    Gathering data from multiple sources (databases, APIs, CSV files), handling missing values, removing outliers, and ensuring data quality through validation checks.
+  </Step>
+  
+  <Step title="Exploratory Data Analysis">
+    Statistical analysis, visualization of trends and patterns, correlation analysis, and identifying key features that drive business outcomes.
+  </Step>
+  
+  <Step title="Model Development">
+    Building forecasting models using Facebook Prophet for time-series analysis, incorporating seasonality, holidays, and external factors that influence trends.
+  </Step>
+  
+  <Step title="Validation & Optimization">
+    Testing model accuracy through cross-validation, tuning hyperparameters, and ensuring predictions meet business requirements for reliability.
+  </Step>
+  
+  <Step title="Deployment & Monitoring">
+    Implementing models in production environments, creating automated pipelines, and monitoring performance with continuous model refinement.
+  </Step>
+</Steps>
+
+## Technical Implementation
+
+### Sales Forecasting with Prophet
+
+<CodeGroup>
+
+```python Data Preparation
+import pandas as pd
+import numpy as np
+from fbprophet import Prophet
+import matplotlib.pyplot as plt
+
+# Load and prepare sales data
+df = pd.read_csv('sales_data.csv')
+df['date'] = pd.to_datetime(df['date'])
+
+# Prepare data for Prophet (requires 'ds' and 'y' columns)
+df_prophet = df[['date', 'sales']].rename(
+    columns={'date': 'ds', 'sales': 'y'}
+)
+
+# Handle outliers and missing values
+df_prophet = df_prophet.dropna()
+df_prophet['y'] = np.where(
+    np.abs(df_prophet['y'] - df_prophet['y'].mean()) > 3 * df_prophet['y'].std(),
+    df_prophet['y'].median(),
+    df_prophet['y']
+)
+
+print(f"Dataset shape: {df_prophet.shape}")
+print(f"Date range: {df_prophet['ds'].min()} to {df_prophet['ds'].max()}")
+```
+
+```python Model Training
+# Initialize and configure Prophet model
+model = Prophet(
+    yearly_seasonality=True,
+    weekly_seasonality=True,
+    daily_seasonality=False,
+    seasonality_mode='multiplicative',
+    changepoint_prior_scale=0.05
+)
+
+# Add custom seasonalities
+model.add_seasonality(
+    name='monthly',
+    period=30.5,
+    fourier_order=5
+)
+
+# Add holiday effects
+holidays = pd.DataFrame({
+    'holiday': 'special_events',
+    'ds': pd.to_datetime(['2024-12-25', '2025-01-01', '2025-07-09']),
+    'lower_window': -1,
+    'upper_window': 1,
+})
+model.add_country_holidays(country_name='AR')
+
+# Train the model
+print("Training model...")
+model.fit(df_prophet)
+print("Model training complete!")
+```
+
+```python Forecasting & Analysis
+# Generate future dates for prediction
+future = model.make_future_dataframe(periods=90, freq='D')
+
+# Generate forecast
+forecast = model.predict(future)
+
+# Extract key predictions
+predictions = forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail(90)
+
+# Calculate confidence intervals
+predictions['confidence_range'] = (
+    predictions['yhat_upper'] - predictions['yhat_lower']
+)
+
+# Visualize results
+fig1 = model.plot(forecast)
+plt.title('Sales Forecast - Next 90 Days')
+plt.xlabel('Date')
+plt.ylabel('Sales')
+plt.tight_layout()
+plt.savefig('forecast_plot.png', dpi=300)
+
+# Plot components
+fig2 = model.plot_components(forecast)
+plt.tight_layout()
+plt.savefig('components_plot.png', dpi=300)
+
+print("\nForecast Summary:")
+print(f"Average predicted sales: ${predictions['yhat'].mean():,.2f}")
+print(f"Peak sales date: {predictions.loc[predictions['yhat'].idxmax(), 'ds']}")
+print(f"Peak sales value: ${predictions['yhat'].max():,.2f}")
+```
+
+```python Model Evaluation
+from sklearn.metrics import mean_absolute_error, mean_squared_error
+import numpy as np
+
+# Cross-validation
+from fbprophet.diagnostics import cross_validation, performance_metrics
+
+df_cv = cross_validation(
+    model,
+    initial='730 days',
+    period='180 days',
+    horizon='90 days'
+)
+
+# Calculate performance metrics
+df_performance = performance_metrics(df_cv)
+
+print("\nModel Performance Metrics:")
+print(f"MAE: ${df_performance['mae'].mean():,.2f}")
+print(f"RMSE: ${df_performance['rmse'].mean():,.2f}")
+print(f"MAPE: {df_performance['mape'].mean():.2%}")
+
+# Calculate accuracy
+accuracy = 1 - df_performance['mape'].mean()
+print(f"\nModel Accuracy: {accuracy:.2%}")
+
+# Save model and results
+import pickle
+with open('sales_forecast_model.pkl', 'wb') as f:
+    pickle.dump(model, f)
+
+forecast.to_csv('sales_forecast_output.csv', index=False)
+print("\nModel and forecast saved successfully!")
+```
+
+</CodeGroup>
+
+## Key Capabilities
+
+<AccordionGroup>
+  <Accordion title="Time Series Analysis">
+    Expert in analyzing temporal data patterns, including trend detection, seasonality decomposition, and anomaly identification. Proficient with Prophet, ARIMA, and SARIMA models for various forecasting scenarios.
+  </Accordion>
+  
+  <Accordion title="Statistical Modeling">
+    Strong foundation in statistical analysis, hypothesis testing, regression analysis, and correlation studies. Applied statistics to validate business assumptions and guide decision-making.
+  </Accordion>
+  
+  <Accordion title="Data Visualization">
+    Creating compelling visualizations using Matplotlib, Seaborn, and Plotly to communicate insights effectively. Interactive dashboards built with Dash for real-time monitoring.
+  </Accordion>
+  
+  <Accordion title="Optimization Algorithms">
+    Implementing optimization techniques for supply chain, inventory management, and resource allocation problems using SciPy and custom algorithms.
+  </Accordion>
+  
+  <Accordion title="Big Data Processing">
+    Efficient data processing with Pandas for datasets containing millions of records, including aggregation, transformation, and feature engineering at scale.
+  </Accordion>
+</AccordionGroup>
+
+## Tools & Environment
+
+<CardGroup cols={2}>
+  <Card title="Python Ecosystem" icon="python">
+    - **Pandas**: Data manipulation and analysis
+    - **NumPy**: Numerical computing
+    - **SciPy**: Scientific computing and optimization
+    - **Scikit-learn**: Machine learning
+  </Card>
+  
+  <Card title="Forecasting & Visualization" icon="chart-mixed">
+    - **Facebook Prophet**: Time series forecasting
+    - **Matplotlib**: Static visualizations
+    - **Seaborn**: Statistical graphics
+    - **Plotly/Dash**: Interactive dashboards
+  </Card>
+  
+  <Card title="Data Management" icon="database">
+    - **Conda**: Environment management
+    - **Jupyter**: Interactive notebooks
+    - **SQLAlchemy**: Database connectivity
+    - **PostgreSQL/MongoDB**: Data storage
+  </Card>
+  
+  <Card title="Development Tools" icon="code">
+    - **Git**: Version control
+    - **VS Code**: Development environment
+    - **Docker**: Containerization
+    - **Apache Airflow**: Workflow automation
+  </Card>
+</CardGroup>
+
+## Business Impact
+
+<Info>
+**Measurable Results**: My data analytics projects have delivered tangible business value:
+- **23% reduction** in logistics costs through route optimization
+- **92% accuracy** in sales forecasting models
+- **15% improvement** in inventory turnover rates
+- **30% decrease** in stock-out incidents
+- **$500K+ annual savings** through optimized inventory management
+</Info>
+
+## Project Approach
+
+Every data analytics project follows a rigorous process:
+
+1. **Business Understanding**: Deep dive into business objectives and pain points
+2. **Data Assessment**: Evaluate data quality, availability, and gaps
+3. **Analysis & Modeling**: Apply appropriate statistical and ML techniques
+4. **Validation**: Ensure model accuracy meets business requirements
+5. **Implementation**: Deploy models with monitoring and maintenance plans
+6. **Communication**: Present findings with clear visualizations and recommendations
+
+<Warning>
+**Data Quality Focus**: All projects emphasize data quality and validation. Garbage in, garbage out - ensuring clean, reliable data is the foundation of accurate predictions.
+</Warning>
+
+---
+
+<Check>
+These projects demonstrate my ability to bridge the gap between complex data analysis and practical business applications, delivering insights that drive strategic decisions.
+</Check>

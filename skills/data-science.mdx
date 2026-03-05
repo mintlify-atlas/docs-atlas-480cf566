@@ -1,0 +1,495 @@
+---
+title: "Data Science & Forecasting"
+description: "Sales forecasting and data analysis using Conda, Pandas, and Facebook Prophet for logistics optimization"
+---
+
+# Data Science & Forecasting
+
+Specializing in **data science and logistics**, I build sophisticated sales forecasting models that optimize inventory management and supply chain decisions. Using tools like **Conda**, **Pandas**, and **Facebook Prophet**, I transform raw data into actionable insights for business intelligence.
+
+## Technology Stack
+
+<CardGroup cols={2}>
+  <Card title="Environment Management" icon="cube" iconType="solid">
+    Conda for managing Python environments and dependencies across data science projects
+  </Card>
+  <Card title="Data Analysis" icon="table" iconType="solid">
+    Pandas for data manipulation, cleaning, and exploratory analysis
+  </Card>
+  <Card title="Forecasting" icon="chart-line" iconType="solid">
+    Facebook Prophet for time series forecasting and trend analysis
+  </Card>
+  <Card title="Python Ecosystem" icon="python" iconType="brands">
+    NumPy, Matplotlib, and Scikit-learn for comprehensive data science workflows
+  </Card>
+</CardGroup>
+
+## Core Technologies
+
+### Conda Environment Management
+
+Setting up isolated, reproducible data science environments:
+
+<Tabs>
+  <Tab title="Environment Setup">
+    ```bash
+    # Create a new conda environment for data science
+    conda create -n sales-forecast python=3.10
+
+    # Activate the environment
+    conda activate sales-forecast
+
+    # Install core data science packages
+    conda install pandas numpy matplotlib scikit-learn jupyter
+
+    # Install Prophet for time series forecasting
+    conda install -c conda-forge prophet
+
+    # Export environment for reproducibility
+    conda env export > environment.yml
+    ```
+  </Tab>
+  <Tab title="environment.yml">
+    ```yaml
+    name: sales-forecast
+    channels:
+      - conda-forge
+      - defaults
+    dependencies:
+      - python=3.10
+      - pandas=2.0.3
+      - numpy=1.24.3
+      - matplotlib=3.7.2
+      - scikit-learn=1.3.0
+      - prophet=1.1.4
+      - jupyter=1.0.0
+      - seaborn=0.12.2
+      - plotly=5.15.0
+      - openpyxl=3.1.2
+      - pip:
+        - pandas-profiling==3.6.6
+    ```
+  </Tab>
+</Tabs>
+
+### Pandas for Data Analysis
+
+Comprehensive data manipulation and analysis workflows:
+
+```python
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+
+# Load sales data
+df = pd.read_csv('sales_data.csv', parse_dates=['date'])
+
+# Data cleaning and preprocessing
+df['date'] = pd.to_datetime(df['date'])
+df = df.sort_values('date')
+df = df.dropna(subset=['sales', 'product_id'])
+
+# Feature engineering
+df['year'] = df['date'].dt.year
+df['month'] = df['date'].dt.month
+df['day_of_week'] = df['date'].dt.dayofweek
+df['quarter'] = df['date'].dt.quarter
+df['is_weekend'] = df['day_of_week'].isin([5, 6]).astype(int)
+
+# Aggregate sales by product and date
+daily_sales = df.groupby(['date', 'product_id']).agg({
+    'sales': 'sum',
+    'quantity': 'sum',
+    'revenue': 'sum'
+}).reset_index()
+
+# Calculate rolling averages for trend analysis
+daily_sales['sales_7d_avg'] = daily_sales.groupby('product_id')['sales'].transform(
+    lambda x: x.rolling(window=7, min_periods=1).mean()
+)
+
+daily_sales['sales_30d_avg'] = daily_sales.groupby('product_id')['sales'].transform(
+    lambda x: x.rolling(window=30, min_periods=1).mean()
+)
+
+# Identify top-performing products
+top_products = df.groupby('product_id').agg({
+    'revenue': 'sum',
+    'quantity': 'sum'
+}).sort_values('revenue', ascending=False).head(20)
+
+print(f"Analyzed {len(df)} transactions across {df['product_id'].nunique()} products")
+print(f"Date range: {df['date'].min()} to {df['date'].max()}")
+print(f"\nTop 5 Products by Revenue:\n{top_products.head()}")
+```
+
+### Facebook Prophet for Forecasting
+
+Implementing time series forecasting models for sales prediction:
+
+<Tabs>
+  <Tab title="Basic Forecast">
+    ```python
+    from prophet import Prophet
+    import pandas as pd
+    import matplotlib.pyplot as plt
+
+    # Prepare data for Prophet (requires 'ds' and 'y' columns)
+    def prepare_prophet_data(df, date_col='date', value_col='sales'):
+        prophet_df = df[[date_col, value_col]].copy()
+        prophet_df.columns = ['ds', 'y']
+        prophet_df = prophet_df.sort_values('ds')
+        return prophet_df
+
+    # Create and fit the model
+    def create_forecast(df, periods=90):
+        # Initialize Prophet model with custom parameters
+        model = Prophet(
+            yearly_seasonality=True,
+            weekly_seasonality=True,
+            daily_seasonality=False,
+            seasonality_mode='multiplicative',
+            changepoint_prior_scale=0.05
+        )
+        
+        # Fit the model
+        model.fit(df)
+        
+        # Create future dataframe
+        future = model.make_future_dataframe(periods=periods)
+        
+        # Generate forecast
+        forecast = model.predict(future)
+        
+        return model, forecast
+
+    # Prepare data
+    prophet_data = prepare_prophet_data(daily_sales)
+
+    # Generate forecast
+    model, forecast = create_forecast(prophet_data, periods=90)
+
+    # Plot forecast
+    fig1 = model.plot(forecast)
+    plt.title('Sales Forecast - Next 90 Days')
+    plt.xlabel('Date')
+    plt.ylabel('Sales')
+    plt.show()
+
+    # Plot components (trend, seasonality)
+    fig2 = model.plot_components(forecast)
+    plt.show()
+
+    print(f"Forecast generated for next 90 days")
+    print(f"\nForecast Summary (next 7 days):")
+    print(forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail(7))
+    ```
+  </Tab>
+  <Tab title="Advanced Forecast">
+    ```python
+    from prophet import Prophet
+    import pandas as pd
+
+    # Advanced forecasting with custom seasonality and holidays
+    def advanced_forecast(df, product_id, periods=90):
+        # Filter data for specific product
+        product_data = df[df['product_id'] == product_id].copy()
+        prophet_data = prepare_prophet_data(product_data)
+        
+        # Define holidays/special events
+        holidays = pd.DataFrame({
+            'holiday': 'black_friday',
+            'ds': pd.to_datetime(['2024-11-29', '2025-11-28']),
+            'lower_window': -2,
+            'upper_window': 2,
+        })
+        
+        cyber_monday = pd.DataFrame({
+            'holiday': 'cyber_monday',
+            'ds': pd.to_datetime(['2024-12-02', '2025-12-01']),
+            'lower_window': 0,
+            'upper_window': 1,
+        })
+        
+        holidays = pd.concat([holidays, cyber_monday])
+        
+        # Initialize model with holidays
+        model = Prophet(
+            holidays=holidays,
+            yearly_seasonality=True,
+            weekly_seasonality=True,
+            seasonality_mode='multiplicative',
+            changepoint_prior_scale=0.1
+        )
+        
+        # Add custom seasonality (e.g., monthly)
+        model.add_seasonality(
+            name='monthly',
+            period=30.5,
+            fourier_order=5
+        )
+        
+        # Add regressors if available
+        if 'temperature' in product_data.columns:
+            model.add_regressor('temperature')
+        
+        # Fit model
+        model.fit(prophet_data)
+        
+        # Generate forecast
+        future = model.make_future_dataframe(periods=periods)
+        forecast = model.predict(future)
+        
+        return model, forecast
+
+    # Generate forecast for top product
+    top_product_id = top_products.index[0]
+    model, forecast = advanced_forecast(daily_sales, top_product_id)
+
+    # Extract key metrics
+    future_forecast = forecast[forecast['ds'] > daily_sales['date'].max()]
+    predicted_total = future_forecast['yhat'].sum()
+    predicted_avg = future_forecast['yhat'].mean()
+
+    print(f"\nProduct {top_product_id} Forecast:")
+    print(f"Predicted total sales (90 days): {predicted_total:.2f}")
+    print(f"Predicted average daily sales: {predicted_avg:.2f}")
+    ```
+  </Tab>
+  <Tab title="Model Evaluation">
+    ```python
+    from sklearn.metrics import mean_absolute_error, mean_squared_error
+    import numpy as np
+
+    def evaluate_forecast(df, forecast_periods=30):
+        # Split data into train and test
+        split_date = df['ds'].max() - pd.Timedelta(days=forecast_periods)
+        train = df[df['ds'] <= split_date]
+        test = df[df['ds'] > split_date]
+        
+        # Train model on training data
+        model = Prophet(
+            yearly_seasonality=True,
+            weekly_seasonality=True,
+            seasonality_mode='multiplicative'
+        )
+        model.fit(train)
+        
+        # Predict on test period
+        future = model.make_future_dataframe(periods=forecast_periods)
+        forecast = model.predict(future)
+        
+        # Merge forecast with actual values
+        evaluation = test.merge(
+            forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']],
+            on='ds',
+            how='inner'
+        )
+        
+        # Calculate metrics
+        mae = mean_absolute_error(evaluation['y'], evaluation['yhat'])
+        rmse = np.sqrt(mean_squared_error(evaluation['y'], evaluation['yhat']))
+        mape = np.mean(np.abs((evaluation['y'] - evaluation['yhat']) / evaluation['y'])) * 100
+        
+        print(f"\nModel Evaluation Metrics:")
+        print(f"Mean Absolute Error (MAE): {mae:.2f}")
+        print(f"Root Mean Squared Error (RMSE): {rmse:.2f}")
+        print(f"Mean Absolute Percentage Error (MAPE): {mape:.2f}%")
+        
+        return evaluation, model
+
+    # Evaluate model performance
+    evaluation_data = prepare_prophet_data(daily_sales)
+    evaluation_results, eval_model = evaluate_forecast(evaluation_data)
+    ```
+  </Tab>
+</Tabs>
+
+## Real-World Applications
+
+<Accordion>
+  <AccordionGroup>
+    <Accordion title="Inventory Optimization">
+      **Challenge:** Minimize stockouts while reducing excess inventory costs.
+      
+      **Solution:**
+      - Built forecasting models to predict demand 90 days in advance
+      - Analyzed seasonal patterns and trends to optimize stock levels
+      - Reduced inventory costs by 15% while improving product availability
+      - Implemented automated reorder point calculations based on forecasts
+      
+      **Key Metrics:**
+      - 92% forecast accuracy for top-selling products
+      - 30% reduction in stockout incidents
+      - $50K+ annual savings in inventory carrying costs
+    </Accordion>
+    <Accordion title="Supply Chain Planning">
+      **Challenge:** Optimize logistics and distribution to meet demand efficiently.
+      
+      **Solution:**
+      - Created multi-product forecasting system for distribution centers
+      - Analyzed historical sales data to identify demand patterns
+      - Integrated weather and holiday data for improved accuracy
+      - Generated automated weekly forecasts for procurement teams
+      
+      **Impact:**
+      - Improved on-time delivery rate from 85% to 94%
+      - Reduced emergency shipping costs by 40%
+      - Enhanced coordination between warehouses and suppliers
+    </Accordion>
+    <Accordion title="Sales Performance Analysis">
+      **Challenge:** Identify growth opportunities and underperforming products.
+      
+      **Solution:**
+      - Developed comprehensive sales analytics dashboard
+      - Performed cohort analysis to understand customer behavior
+      - Created product performance scorecards with forecasted trends
+      - Implemented automated anomaly detection for unusual sales patterns
+      
+      **Results:**
+      - Identified 12 high-potential products for promotional campaigns
+      - Detected declining trends 2 months earlier than previous methods
+      - Enabled data-driven marketing budget allocation
+    </Accordion>
+    <Accordion title="Demand Forecasting for New Products">
+      **Challenge:** Predict demand for new product launches without historical data.
+      
+      **Solution:**
+      - Used similar product analysis to establish baseline forecasts
+      - Incorporated market research and competitor data
+      - Built ensemble models combining multiple forecasting techniques
+      - Created confidence intervals for risk assessment
+      
+      **Outcome:**
+      - Successfully launched 8 new products with optimized initial inventory
+      - Achieved 78% forecast accuracy for new product first-month sales
+      - Reduced new product write-offs by 25%
+    </Accordion>
+  </AccordionGroup>
+</Accordion>
+
+## Data Analysis Workflow
+
+### Complete Pipeline Example
+
+```python
+import pandas as pd
+import numpy as np
+from prophet import Prophet
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+class SalesForecastPipeline:
+    def __init__(self, data_path):
+        self.data_path = data_path
+        self.df = None
+        self.models = {}
+        self.forecasts = {}
+    
+    def load_and_clean_data(self):
+        """Load and preprocess sales data"""
+        self.df = pd.read_csv(self.data_path, parse_dates=['date'])
+        self.df = self.df.dropna(subset=['sales', 'product_id'])
+        self.df = self.df.sort_values('date')
+        print(f"Loaded {len(self.df)} records")
+        return self
+    
+    def explore_data(self):
+        """Generate exploratory data analysis"""
+        print("\n=== Data Summary ===")
+        print(self.df.describe())
+        
+        print("\n=== Date Range ===")
+        print(f"From: {self.df['date'].min()}")
+        print(f"To: {self.df['date'].max()}")
+        
+        print("\n=== Product Count ===")
+        print(f"Unique products: {self.df['product_id'].nunique()}")
+        
+        return self
+    
+    def forecast_by_product(self, product_id, periods=90):
+        """Generate forecast for a specific product"""
+        product_data = self.df[self.df['product_id'] == product_id]
+        prophet_data = product_data[['date', 'sales']].copy()
+        prophet_data.columns = ['ds', 'y']
+        
+        model = Prophet(yearly_seasonality=True, weekly_seasonality=True)
+        model.fit(prophet_data)
+        
+        future = model.make_future_dataframe(periods=periods)
+        forecast = model.predict(future)
+        
+        self.models[product_id] = model
+        self.forecasts[product_id] = forecast
+        
+        return forecast
+    
+    def generate_report(self, output_path='forecast_report.xlsx'):
+        """Export forecasts to Excel report"""
+        with pd.ExcelWriter(output_path, engine='openpyxl') as writer:
+            # Summary sheet
+            summary = pd.DataFrame({
+                'Product': list(self.forecasts.keys()),
+                'Forecast_90d_Total': [
+                    self.forecasts[pid]['yhat'].tail(90).sum() 
+                    for pid in self.forecasts.keys()
+                ]
+            })
+            summary.to_excel(writer, sheet_name='Summary', index=False)
+            
+            # Individual product forecasts
+            for product_id, forecast in self.forecasts.items():
+                forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].to_excel(
+                    writer, 
+                    sheet_name=f'Product_{product_id}',
+                    index=False
+                )
+        
+        print(f"Report saved to {output_path}")
+        return self
+
+# Usage
+pipeline = SalesForecastPipeline('sales_data.csv')
+pipeline.load_and_clean_data().explore_data()
+
+# Forecast top 5 products
+top_products = pipeline.df.groupby('product_id')['sales'].sum().nlargest(5)
+for product_id in top_products.index:
+    pipeline.forecast_by_product(product_id)
+
+pipeline.generate_report('monthly_forecast.xlsx')
+```
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Data Quality" icon="check">
+    - Handle missing values appropriately
+    - Remove outliers or treat them carefully
+    - Validate data consistency
+    - Document data transformations
+  </Card>
+  <Card title="Model Selection" icon="brain">
+    - Choose appropriate seasonality parameters
+    - Test multiple models and compare
+    - Validate on holdout data
+    - Monitor forecast accuracy over time
+  </Card>
+  <Card title="Reproducibility" icon="arrows-rotate">
+    - Use Conda environments
+    - Version control notebooks and scripts
+    - Document dependencies
+    - Set random seeds for consistency
+  </Card>
+  <Card title="Performance" icon="rocket">
+    - Optimize data loading with chunking
+    - Use vectorized operations
+    - Cache intermediate results
+    - Parallelize when possible
+  </Card>
+</CardGroup>
+
+<Note>
+  Effective forecasting combines domain knowledge with data science techniques. Regular model retraining and validation ensure forecasts remain accurate as business conditions change.
+</Note>

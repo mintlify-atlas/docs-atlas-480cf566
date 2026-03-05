@@ -1,0 +1,585 @@
+---
+title: "Video Editing & Development Tools"
+description: "Professional tools and workflows for content creation, version control, and deployment"
+---
+
+# Video Editing & Development Tools
+
+As a **Content Creator** and developer, I leverage professional tools for multimedia production and software development. From video editing with **DaVinci Resolve** to version control with **Git** and deployment with **Vercel**, these tools enable efficient, high-quality workflows.
+
+## Technology Stack
+
+<CardGroup cols={3}>
+  <Card title="DaVinci Resolve" icon="film" iconType="solid">
+    Professional video editing, color correction, and post-production for digital platforms
+  </Card>
+  <Card title="Git" icon="code-branch" iconType="solid">
+    Distributed version control for collaborative software development
+  </Card>
+  <Card title="Vercel" icon="cloud" iconType="solid">
+    Modern deployment platform for frontend applications and serverless functions
+  </Card>
+</CardGroup>
+
+## DaVinci Resolve
+
+### Professional Video Editing
+
+DaVinci Resolve is my primary tool for creating engaging video content for digital platforms, offering professional-grade editing, color correction, and visual effects.
+
+<Tabs>
+  <Tab title="Editing Workflow">
+    **Project Setup**
+    - 1080p/4K timeline configuration
+    - Frame rate optimization (24fps, 30fps, 60fps)
+    - Color space management (Rec.709, DCI-P3)
+    - Audio sync and organization
+    
+    **Cutting & Assembly**
+    - Multi-camera editing
+    - J-cuts and L-cuts for smooth transitions
+    - B-roll integration
+    - Pacing and rhythm optimization
+    - Ripple editing for efficient workflow
+    
+    **Typical Edit Page Hotkeys**
+    ```
+    A - Select tool
+    T - Trim tool
+    B - Blade tool
+    Command+Z - Undo
+    Command+B - Add marker
+    Shift+[ - In point
+    Shift+] - Out point
+    F9 - Insert edit
+    F10 - Overwrite edit
+    ```
+  </Tab>
+  <Tab title="Color Grading">
+    **Primary Color Correction**
+    - Exposure and contrast adjustment
+    - White balance correction
+    - Saturation and vibrance
+    - Shadows, midtones, highlights balance
+    
+    **Secondary Color Correction**
+    - HSL qualifiers for targeted adjustments
+    - Power windows for selective grading
+    - Skin tone enhancement
+    - Sky and background refinement
+    
+    **Color Grading Workflow**
+    ```
+    1. Balance - Correct white balance and exposure
+    2. Contrast - Set black and white points
+    3. Color - Apply creative look (LUTs, curves)
+    4. Refinement - Secondary corrections
+    5. Match - Ensure consistency across shots
+    ```
+    
+    **Common Color Adjustments**
+    - Cinematic teal & orange look
+    - Warm golden hour enhancement
+    - Cool blue moody atmosphere
+    - High-contrast dramatic grade
+    - Natural documentary style
+  </Tab>
+  <Tab title="Effects & Audio">
+    **Visual Effects**
+    - Text animations and lower thirds
+    - Transitions (dissolves, wipes, zooms)
+    - Motion graphics and titles
+    - Stabilization and tracking
+    - Green screen keying
+    - Speed ramping and time remapping
+    
+    **Audio Post-Production**
+    - Noise reduction and dialogue cleanup
+    - EQ for voice clarity
+    - Compression for consistent levels
+    - Background music mixing
+    - Sound effects integration
+    - Stereo/surround sound mixing
+    
+    **Fairlight Audio Workflow**
+    ```
+    1. Organize tracks (dialogue, music, SFX)
+    2. Noise reduction on dialogue
+    3. EQ and compression
+    4. Balance levels (-12dB to -6dB for dialogue)
+    5. Add music and effects
+    6. Master bus processing
+    7. Final loudness normalization (-16 LUFS for YouTube)
+    ```
+  </Tab>
+  <Tab title="Export Settings">
+    **YouTube Optimization**
+    ```
+    Format: MP4
+    Codec: H.264
+    Resolution: 1920x1080 or 3840x2160
+    Frame Rate: Match timeline (30fps/60fps)
+    Bit Rate: 
+      - 1080p: 8-12 Mbps
+      - 4K: 35-45 Mbps
+    Audio: AAC, 320 kbps, 48kHz
+    ```
+    
+    **Social Media Formats**
+    
+    Instagram/TikTok (Vertical)
+    ```
+    Resolution: 1080x1920 (9:16)
+    Frame Rate: 30fps
+    Bit Rate: 8 Mbps
+    Duration: 15-60 seconds
+    ```
+    
+    Twitter/X
+    ```
+    Resolution: 1280x720 (16:9)
+    Frame Rate: 30fps
+    Max File Size: 512MB
+    Max Duration: 2:20
+    ```
+    
+    Facebook
+    ```
+    Resolution: 1920x1080
+    Frame Rate: 30fps
+    Bit Rate: 8 Mbps
+    Recommended: Square (1:1) for feed
+    ```
+  </Tab>
+</Tabs>
+
+### Content Creation Pipeline
+
+<Accordion>
+  <AccordionGroup>
+    <Accordion title="Pre-Production">
+      **Planning Phase**
+      - Script and storyboard development
+      - Shot list creation
+      - Equipment preparation
+      - Location scouting
+      - Talent coordination
+      
+      **Project Organization**
+      - Folder structure setup
+      - Naming conventions
+      - Backup strategy
+      - Asset management
+    </Accordion>
+    <Accordion title="Production">
+      **Recording Best Practices**
+      - 4K capture for flexibility in post
+      - Multiple takes for options
+      - Proper lighting setup (3-point lighting)
+      - Clean audio recording (separate tracks)
+      - B-roll coverage
+      - Color charts for grading reference
+    </Accordion>
+    <Accordion title="Post-Production">
+      **Editing Workflow**
+      1. Import and organize media
+      2. Create proxy files for smooth playback
+      3. Assemble rough cut
+      4. Refine edit with transitions
+      5. Add graphics and effects
+      6. Color grade all clips
+      7. Audio mixing and mastering
+      8. Final review and export
+      
+      **Quality Control**
+      - Check for audio sync issues
+      - Verify color consistency
+      - Test on multiple devices
+      - Review with fresh eyes
+    </Accordion>
+    <Accordion title="Distribution">
+      **Platform Optimization**
+      - YouTube: 1080p/4K, SEO-optimized titles
+      - Instagram: Vertical format, first 3 seconds critical
+      - TikTok: Fast-paced, hook-driven content
+      - LinkedIn: Professional, value-driven
+      
+      **Analytics & Iteration**
+      - Monitor retention metrics
+      - A/B test thumbnails
+      - Analyze engagement patterns
+      - Iterate based on performance
+    </Accordion>
+  </AccordionGroup>
+</Accordion>
+
+## Git Version Control
+
+### Core Git Workflow
+
+Efficient version control for collaborative development:
+
+<Tabs>
+  <Tab title="Basic Commands">
+    ```bash
+    # Initialize repository
+    git init
+    git remote add origin https://github.com/username/repo.git
+
+    # Daily workflow
+    git status                    # Check current status
+    git add .                     # Stage all changes
+    git add file.js              # Stage specific file
+    git commit -m "Add feature"  # Commit with message
+    git push origin main         # Push to remote
+
+    # Pull latest changes
+    git pull origin main         # Fetch and merge
+    git fetch origin             # Fetch without merge
+    git merge origin/main        # Merge fetched changes
+
+    # View history
+    git log                      # Full commit history
+    git log --oneline            # Condensed history
+    git log --graph              # Visual branch graph
+    git show <commit-hash>       # Show specific commit
+    ```
+  </Tab>
+  <Tab title="Branching">
+    ```bash
+    # Branch management
+    git branch                          # List branches
+    git branch feature/new-feature      # Create branch
+    git checkout feature/new-feature    # Switch branch
+    git checkout -b feature/login       # Create and switch
+
+    # Modern git switch (Git 2.23+)
+    git switch main                     # Switch to main
+    git switch -c feature/dashboard     # Create and switch
+
+    # Merge branches
+    git checkout main
+    git merge feature/new-feature       # Merge into main
+    git branch -d feature/new-feature   # Delete merged branch
+
+    # Rebase workflow
+    git checkout feature/my-feature
+    git rebase main                     # Rebase on main
+    git push --force-with-lease         # Safe force push
+
+    # View branch differences
+    git diff main..feature/new-feature  # Compare branches
+    ```
+  </Tab>
+  <Tab title="Advanced">
+    ```bash
+    # Stash changes
+    git stash                           # Save changes temporarily
+    git stash list                      # View stashed changes
+    git stash pop                       # Apply and remove stash
+    git stash apply                     # Apply keeping stash
+    git stash drop                      # Delete stash
+
+    # Undo changes
+    git reset HEAD~1                    # Undo last commit (keep changes)
+    git reset --hard HEAD~1             # Undo last commit (discard changes)
+    git revert <commit-hash>            # Create reverting commit
+    git checkout -- file.js             # Discard file changes
+
+    # Interactive rebase
+    git rebase -i HEAD~3                # Edit last 3 commits
+    # Options: pick, reword, edit, squash, fixup, drop
+
+    # Cherry-pick commits
+    git cherry-pick <commit-hash>       # Apply specific commit
+
+    # Clean untracked files
+    git clean -n                        # Preview files to delete
+    git clean -fd                       # Delete untracked files/dirs
+
+    # Search commits
+    git log --grep="bug fix"            # Search commit messages
+    git log -S"function name"           # Search code changes
+    ```
+  </Tab>
+  <Tab title="Configuration">
+    ```bash
+    # User configuration
+    git config --global user.name "George Valle"
+    git config --global user.email "georgevalle@outlook.com.ar"
+
+    # Editor setup
+    git config --global core.editor "code --wait"
+
+    # Aliases for efficiency
+    git config --global alias.st status
+    git config --global alias.co checkout
+    git config --global alias.br branch
+    git config --global alias.cm "commit -m"
+    git config --global alias.lg "log --graph --oneline --decorate"
+
+    # Default branch name
+    git config --global init.defaultBranch main
+
+    # Line ending handling
+    git config --global core.autocrlf input  # Mac/Linux
+    git config --global core.autocrlf true   # Windows
+
+    # View all config
+    git config --list
+    git config --global --list
+    ```
+  </Tab>
+</Tabs>
+
+### Collaboration Workflows
+
+<CardGroup cols={2}>
+  <Card title="Feature Branch Workflow" icon="code-branch">
+    1. Create feature branch from main
+    2. Develop and commit changes
+    3. Push branch to remote
+    4. Create pull request
+    5. Code review and discussion
+    6. Merge to main after approval
+  </Card>
+  <Card title="Gitflow Workflow" icon="diagram-project">
+    - `main`: Production-ready code
+    - `develop`: Integration branch
+    - `feature/*`: New features
+    - `release/*`: Release preparation
+    - `hotfix/*`: Emergency fixes
+  </Card>
+</CardGroup>
+
+## Vercel Deployment
+
+### Modern Frontend Deployment
+
+Seamless deployment for React applications and serverless functions:
+
+<Tabs>
+  <Tab title="Setup & Deploy">
+    ```bash
+    # Install Vercel CLI
+    npm install -g vercel
+
+    # Login to Vercel
+    vercel login
+
+    # Deploy project
+    vercel                      # Deploy to preview
+    vercel --prod               # Deploy to production
+
+    # Link existing project
+    vercel link
+
+    # Environment variables
+    vercel env add              # Add environment variable
+    vercel env ls               # List variables
+    vercel env rm               # Remove variable
+
+    # View logs
+    vercel logs                 # Recent logs
+    vercel logs [deployment-url]  # Specific deployment
+
+    # List deployments
+    vercel ls
+
+    # Remove deployment
+    vercel rm [deployment-id]
+    ```
+  </Tab>
+  <Tab title="Configuration">
+    ```json
+    // vercel.json
+    {
+      "version": 2,
+      "builds": [
+        {
+          "src": "package.json",
+          "use": "@vercel/next"
+        }
+      ],
+      "routes": [
+        {
+          "src": "/api/(.*)",
+          "dest": "/api/$1"
+        },
+        {
+          "src": "/(.*)",
+          "dest": "/$1"
+        }
+      ],
+      "env": {
+        "MONGODB_URI": "@mongodb-uri",
+        "API_KEY": "@api-key"
+      },
+      "headers": [
+        {
+          "source": "/api/(.*)",
+          "headers": [
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Access-Control-Allow-Methods",
+              "value": "GET, POST, PUT, DELETE, OPTIONS"
+            }
+          ]
+        }
+      ],
+      "redirects": [
+        {
+          "source": "/old-page",
+          "destination": "/new-page",
+          "permanent": true
+        }
+      ]
+    }
+    ```
+  </Tab>
+  <Tab title="Serverless Functions">
+    ```javascript
+    // api/hello.js
+    module.exports = (req, res) => {
+      const { name = 'World' } = req.query;
+      res.status(200).json({ message: `Hello, ${name}!` });
+    };
+
+    // api/products.js
+    import { MongoClient } from 'mongodb';
+
+    export default async function handler(req, res) {
+      const client = await MongoClient.connect(process.env.MONGODB_URI);
+      const db = client.db('store');
+      
+      if (req.method === 'GET') {
+        const products = await db.collection('products').find({}).toArray();
+        res.status(200).json(products);
+      } else if (req.method === 'POST') {
+        const product = req.body;
+        const result = await db.collection('products').insertOne(product);
+        res.status(201).json(result);
+      }
+      
+      await client.close();
+    }
+
+    // api/auth/[...auth].js - Catch-all route
+    export default function handler(req, res) {
+      const { auth } = req.query;  // Array of route segments
+      res.json({ path: auth });
+    }
+    ```
+  </Tab>
+  <Tab title="GitHub Integration">
+    **Automatic Deployment**
+    
+    1. Connect GitHub repository to Vercel
+    2. Configure production branch (main)
+    3. Enable automatic deployments
+    
+    **Branch Previews**
+    - Every PR gets unique preview URL
+    - Automatic deployment on push
+    - Comments on PR with preview link
+    - Test before merging to production
+    
+    **Environment Variables**
+    ```bash
+    # Production
+    vercel env add MONGODB_URI production
+    
+    # Preview (all branches)
+    vercel env add API_KEY preview
+    
+    # Development
+    vercel env add DEBUG development
+    ```
+    
+    **Build Settings**
+    - Build Command: `npm run build`
+    - Output Directory: `build` or `dist`
+    - Install Command: `npm install`
+    - Development Command: `npm run dev`
+  </Tab>
+</Tabs>
+
+### Deployment Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Performance" icon="rocket">
+    - Image optimization with Vercel Image
+    - Automatic code splitting
+    - Edge network CDN
+    - Gzip/Brotli compression
+    - Caching strategies
+  </Card>
+  <Card title="Security" icon="shield-halved">
+    - Environment variable encryption
+    - HTTPS by default
+    - DDoS protection
+    - Rate limiting
+    - Authentication integration
+  </Card>
+  <Card title="Monitoring" icon="chart-line">
+    - Real-time analytics
+    - Performance metrics
+    - Error tracking
+    - Deployment history
+    - Rollback capabilities
+  </Card>
+  <Card title="Collaboration" icon="users">
+    - Team management
+    - Preview deployments
+    - Custom domains
+    - Branch protection
+    - Deployment comments
+  </Card>
+</CardGroup>
+
+## Integrated Workflow
+
+Combining all tools for efficient project delivery:
+
+```bash
+# 1. Initialize new project
+cd my-project
+git init
+npm create vite@latest . -- --template react
+npm install
+
+# 2. Set up Git and GitHub
+git add .
+git commit -m "Initial commit: Set up React project"
+git branch -M main
+git remote add origin https://github.com/GeorgeValle/my-project.git
+git push -u origin main
+
+# 3. Deploy to Vercel
+vercel login
+vercel
+vercel --prod
+
+# 4. Development workflow
+git checkout -b feature/homepage
+# Make changes...
+git add .
+git commit -m "Add homepage component"
+git push origin feature/homepage
+# Create PR on GitHub
+# Review preview deployment on Vercel
+# Merge PR → automatic production deployment
+
+# 5. Video content workflow
+# Record demo/tutorial
+# Edit in DaVinci Resolve
+# Export optimized for YouTube
+# Upload with project link in description
+```
+
+<Note>
+  This integrated toolchain enables rapid iteration from development to deployment, with professional content creation capabilities for showcasing projects and building an audience.
+</Note>

@@ -1,0 +1,357 @@
+---
+title: "MERN Stack Development"
+description: "Full-stack development expertise using MongoDB, Express.js, React, and Node.js"
+---
+
+# MERN Stack Development
+
+As a **Systems Analyst** specializing in the MERN stack, I build modern, scalable web applications using MongoDB, Express.js, React, and Node.js. This comprehensive JavaScript/TypeScript ecosystem enables rapid development of full-stack applications with a unified language across the entire stack.
+
+## Technology Stack
+
+<CardGroup cols={2}>
+  <Card title="Frontend" icon="react" iconType="solid">
+    React for building dynamic, component-based user interfaces with modern hooks and state management
+  </Card>
+  <Card title="Backend" icon="server" iconType="solid">
+    Node.js and Express.js for building RESTful APIs and handling server-side logic
+  </Card>
+  <Card title="Database" icon="database" iconType="solid">
+    MongoDB for flexible, document-based data storage with powerful querying capabilities
+  </Card>
+  <Card title="Language" icon="code" iconType="solid">
+    JavaScript across the entire stack for seamless development and code reusability
+  </Card>
+</CardGroup>
+
+## Core Technologies
+
+### React
+
+Building modern, responsive user interfaces with React's component-based architecture:
+
+```jsx
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+function ProductList() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get('/api/products');
+        setProducts(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+
+  return (
+    <div className="product-grid">
+      {products.map(product => (
+        <ProductCard key={product._id} product={product} />
+      ))}
+    </div>
+  );
+}
+
+export default ProductList;
+```
+
+### Node.js & Express.js
+
+Building robust backend APIs with Express.js middleware and routing:
+
+<Tabs>
+  <Tab title="Express Server">
+    ```javascript
+    const express = require('express');
+    const mongoose = require('mongoose');
+    const cors = require('cors');
+    require('dotenv').config();
+
+    const app = express();
+    const PORT = process.env.PORT || 5000;
+
+    // Middleware
+    app.use(cors());
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
+
+    // Database connection
+    mongoose.connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+
+    const db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+    db.once('open', () => {
+      console.log('Connected to MongoDB');
+    });
+
+    // Routes
+    app.use('/api/products', require('./routes/products'));
+    app.use('/api/users', require('./routes/users'));
+    app.use('/api/orders', require('./routes/orders'));
+
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+    ```
+  </Tab>
+  <Tab title="API Routes">
+    ```javascript
+    const express = require('express');
+    const router = express.Router();
+    const Product = require('../models/Product');
+
+    // GET all products
+    router.get('/', async (req, res) => {
+      try {
+        const products = await Product.find()
+          .populate('category')
+          .sort({ createdAt: -1 });
+        res.json(products);
+      } catch (error) {
+        res.status(500).json({ message: error.message });
+      }
+    });
+
+    // POST new product
+    router.post('/', async (req, res) => {
+      const product = new Product({
+        name: req.body.name,
+        description: req.body.description,
+        price: req.body.price,
+        category: req.body.category,
+        stock: req.body.stock
+      });
+
+      try {
+        const newProduct = await product.save();
+        res.status(201).json(newProduct);
+      } catch (error) {
+        res.status(400).json({ message: error.message });
+      }
+    });
+
+    // PUT update product
+    router.put('/:id', async (req, res) => {
+      try {
+        const product = await Product.findByIdAndUpdate(
+          req.params.id,
+          req.body,
+          { new: true, runValidators: true }
+        );
+        res.json(product);
+      } catch (error) {
+        res.status(400).json({ message: error.message });
+      }
+    });
+
+    // DELETE product
+    router.delete('/:id', async (req, res) => {
+      try {
+        await Product.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Product deleted successfully' });
+      } catch (error) {
+        res.status(500).json({ message: error.message });
+      }
+    });
+
+    module.exports = router;
+    ```
+  </Tab>
+</Tabs>
+
+### MongoDB
+
+Defining schemas and models for structured data in MongoDB:
+
+```javascript
+const mongoose = require('mongoose');
+
+const productSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  description: {
+    type: String,
+    required: true
+  },
+  price: {
+    type: Number,
+    required: true,
+    min: 0
+  },
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Category',
+    required: true
+  },
+  stock: {
+    type: Number,
+    required: true,
+    min: 0,
+    default: 0
+  },
+  imageUrl: {
+    type: String
+  },
+  tags: [String],
+  isActive: {
+    type: Boolean,
+    default: true
+  }
+}, {
+  timestamps: true
+});
+
+// Virtual for product availability
+productSchema.virtual('isAvailable').get(function() {
+  return this.stock > 0 && this.isActive;
+});
+
+// Method to update stock
+productSchema.methods.updateStock = async function(quantity) {
+  this.stock += quantity;
+  return await this.save();
+};
+
+// Static method to find products by category
+productSchema.statics.findByCategory = function(categoryId) {
+  return this.find({ category: categoryId, isActive: true });
+};
+
+module.exports = mongoose.model('Product', productSchema);
+```
+
+## Real-World Applications
+
+<Accordion>
+  <AccordionGroup>
+    <Accordion title="E-Commerce Platforms">
+      Built complete e-commerce solutions with:
+      - Product catalog management
+      - Shopping cart functionality
+      - User authentication and authorization
+      - Order processing and tracking
+      - Payment gateway integration
+      - Admin dashboard for inventory management
+    </Accordion>
+    <Accordion title="Content Management Systems">
+      Developed custom CMS applications featuring:
+      - Dynamic content creation and editing
+      - Role-based access control
+      - Media management and optimization
+      - SEO-friendly routing
+      - Real-time preview functionality
+    </Accordion>
+    <Accordion title="Business Dashboards">
+      Created analytics and management dashboards with:
+      - Real-time data visualization
+      - Custom reporting tools
+      - User activity tracking
+      - Performance metrics and KPIs
+      - Export functionality for reports
+    </Accordion>
+    <Accordion title="Social Platforms">
+      Implemented social networking features including:
+      - User profiles and authentication
+      - Post creation and sharing
+      - Real-time notifications
+      - Comment and reaction systems
+      - Friend/follower relationships
+    </Accordion>
+  </AccordionGroup>
+</Accordion>
+
+## Development Workflow
+
+### Project Structure
+
+Typical MERN stack project organization:
+
+```
+project-root/
+├── client/                 # React frontend
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   ├── utils/
+│   │   ├── App.js
+│   │   └── index.js
+│   └── package.json
+├── server/                 # Node.js backend
+│   ├── config/
+│   ├── controllers/
+│   ├── models/
+│   ├── routes/
+│   ├── middleware/
+│   ├── utils/
+│   ├── server.js
+│   └── package.json
+└── package.json
+```
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Security" icon="shield-halved">
+    - JWT authentication
+    - Input validation and sanitization
+    - CORS configuration
+    - Environment variables for secrets
+    - Rate limiting and request throttling
+  </Card>
+  <Card title="Performance" icon="gauge-high">
+    - Database indexing
+    - Pagination for large datasets
+    - Caching strategies
+    - Code splitting in React
+    - Compression middleware
+  </Card>
+  <Card title="Code Quality" icon="code-compare">
+    - ESLint and Prettier configuration
+    - Consistent naming conventions
+    - Modular component design
+    - Error handling patterns
+    - Comprehensive testing
+  </Card>
+  <Card title="Deployment" icon="cloud-arrow-up">
+    - Environment-based configuration
+    - CI/CD pipelines
+    - Vercel for frontend hosting
+    - MongoDB Atlas for database
+    - Git version control
+  </Card>
+</CardGroup>
+
+## Integration with Other Technologies
+
+The MERN stack integrates seamlessly with:
+
+- **Vercel** for frontend deployment and serverless functions
+- **Git** for version control and collaboration
+- **REST APIs** and GraphQL for data communication
+- **Socket.io** for real-time features
+- **Redis** for caching and session management
+- **Cloudinary** for media storage and optimization
+
+<Note>
+  The MERN stack provides a complete JavaScript ecosystem for building modern web applications, from database to user interface, with excellent community support and extensive library ecosystem.
+</Note>

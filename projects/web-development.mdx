@@ -1,0 +1,245 @@
+---
+title: Web Development Projects
+description: Full-stack MERN applications and modern web solutions
+---
+
+# Web Development Projects
+
+I specialize in building full-stack web applications using the MERN stack (MongoDB, Express, React, Node.js). My projects focus on creating scalable, maintainable, and user-friendly applications that solve real-world problems.
+
+## Featured Projects
+
+<CardGroup cols={2}>
+  <Card
+    title="E-Commerce Platform"
+    icon="shopping-cart"
+  >
+    A comprehensive e-commerce solution with product catalog, shopping cart, user authentication, and payment integration. Built with React frontend, Express.js API, and MongoDB database.
+    
+    **Technologies**: React, Node.js, Express, MongoDB, Stripe API, JWT Authentication
+  </Card>
+  
+  <Card
+    title="Task Management System"
+    icon="list-check"
+  >
+    Real-time collaborative task management application with team workspaces, project tracking, and notification system. Features drag-and-drop functionality and real-time updates.
+    
+    **Technologies**: React, Socket.io, Node.js, Express, MongoDB, Redux
+  </Card>
+  
+  <Card
+    title="Social Media Dashboard"
+    icon="users"
+  >
+    Analytics dashboard for social media management with post scheduling, engagement tracking, and performance metrics visualization. Integrates with multiple social platforms.
+    
+    **Technologies**: React, Chart.js, Node.js, Express, MongoDB, OAuth 2.0
+  </Card>
+  
+  <Card
+    title="Real Estate Listing Portal"
+    icon="building"
+  >
+    Property listing platform with advanced search filters, virtual tours, and agent contact system. Features responsive design and image optimization.
+    
+    **Technologies**: React, Node.js, Express, MongoDB, Cloudinary, Google Maps API
+  </Card>
+  
+  <Card
+    title="Restaurant Ordering System"
+    icon="utensils"
+  >
+    Online food ordering platform with menu management, order tracking, and delivery coordination. Includes admin panel for restaurant staff.
+    
+    **Technologies**: React, Node.js, Express, MongoDB, Stripe, WebSockets
+  </Card>
+  
+  <Card
+    title="Blog & Portfolio CMS"
+    icon="pen-to-square"
+  >
+    Content management system for bloggers and content creators with markdown support, SEO optimization, and analytics integration.
+    
+    **Technologies**: React, Node.js, Express, MongoDB, Markdown Parser, Google Analytics
+  </Card>
+</CardGroup>
+
+## Technical Approach
+
+### Architecture
+
+<Steps>
+  <Step title="Frontend Layer">
+    React-based single-page applications with component-driven architecture, state management using Redux or Context API, and responsive design principles.
+  </Step>
+  
+  <Step title="API Layer">
+    RESTful APIs built with Express.js, featuring proper routing, middleware for authentication and validation, and comprehensive error handling.
+  </Step>
+  
+  <Step title="Database Layer">
+    MongoDB for flexible data modeling, with Mongoose ODM for schema validation and query optimization.
+  </Step>
+  
+  <Step title="Deployment">
+    Applications deployed on Vercel for frontend and cloud platforms for backend services, with CI/CD pipelines for automated testing and deployment.
+  </Step>
+</Steps>
+
+### Key Features Across Projects
+
+<AccordionGroup>
+  <Accordion title="User Authentication & Authorization">
+    Secure user authentication using JWT tokens, password hashing with bcrypt, and role-based access control for different user types.
+  </Accordion>
+  
+  <Accordion title="Real-Time Communication">
+    WebSocket integration for real-time updates, notifications, and collaborative features using Socket.io.
+  </Accordion>
+  
+  <Accordion title="Responsive Design">
+    Mobile-first approach ensuring seamless experiences across all devices, from smartphones to desktops.
+  </Accordion>
+  
+  <Accordion title="API Integration">
+    Integration with third-party services including payment gateways, social media platforms, mapping services, and cloud storage.
+  </Accordion>
+</AccordionGroup>
+
+## Development Stack
+
+<CodeGroup>
+
+```javascript Frontend - React Component
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+const ProjectList = () => {
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await axios.get('/api/projects');
+        setProjects(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+      }
+    };
+    fetchProjects();
+  }, []);
+
+  return (
+    <div className="project-list">
+      {projects.map(project => (
+        <ProjectCard key={project._id} project={project} />
+      ))}
+    </div>
+  );
+};
+```
+
+```javascript Backend - Express API
+const express = require('express');
+const router = express.Router();
+const Project = require('../models/Project');
+const auth = require('../middleware/auth');
+
+// Get all projects
+router.get('/projects', async (req, res) => {
+  try {
+    const projects = await Project.find()
+      .sort({ createdAt: -1 })
+      .populate('author', 'name email');
+    res.json(projects);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Create new project
+router.post('/projects', auth, async (req, res) => {
+  const project = new Project({
+    title: req.body.title,
+    description: req.body.description,
+    author: req.user.id
+  });
+
+  try {
+    const newProject = await project.save();
+    res.status(201).json(newProject);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+module.exports = router;
+```
+
+```javascript Database - MongoDB Model
+const mongoose = require('mongoose');
+
+const projectSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  description: {
+    type: String,
+    required: true
+  },
+  technologies: [{
+    type: String
+  }],
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  status: {
+    type: String,
+    enum: ['planning', 'in-progress', 'completed'],
+    default: 'planning'
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
+});
+
+module.exports = mongoose.model('Project', projectSchema);
+```
+
+</CodeGroup>
+
+## Best Practices
+
+<Tip>
+**Code Quality**: All projects follow industry best practices including:
+- Clean, modular code architecture
+- Comprehensive error handling
+- Input validation and sanitization
+- Security best practices (CORS, helmet.js, rate limiting)
+- Performance optimization (lazy loading, code splitting)
+- Automated testing (Jest, React Testing Library)
+</Tip>
+
+## Deployment & DevOps
+
+Applications are deployed using modern DevOps practices:
+
+- **Frontend**: Vercel for React applications with automatic deployments
+- **Backend**: Cloud platforms with containerization support
+- **Database**: MongoDB Atlas for managed database services
+- **Version Control**: Git with feature branch workflows
+- **CI/CD**: Automated testing and deployment pipelines
+
+---
+
+<Check>
+Each project demonstrates my ability to build complete, production-ready applications that combine technical excellence with practical usability.
+</Check>
