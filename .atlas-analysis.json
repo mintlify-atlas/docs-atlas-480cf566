@@ -1,0 +1,58 @@
+{
+  "projectType": "general",
+  "projectName": "George Valle",
+  "projectDescription": "Systems Analyst and MERN Stack Developer specializing in data science, AI, and content creation.",
+  "theme": "almond",
+  "primaryColor": "#040404",
+  "lightColor": "#354dc4",
+  "darkColor": "#94a4e4",
+  "navigation": {
+    "groups": [
+      {
+        "group": "About",
+        "pages": [
+          "introduction",
+          "background"
+        ]
+      },
+      {
+        "group": "Technical Expertise",
+        "pages": [
+          "skills/mern-stack",
+          "skills/data-science",
+          "skills/ai-ml",
+          "skills/tools"
+        ]
+      },
+      {
+        "group": "Portfolio",
+        "pages": [
+          "projects/overview",
+          "projects/web-development",
+          "projects/data-analytics",
+          "projects/ai-applications"
+        ]
+      },
+      {
+        "group": "Connect",
+        "pages": [
+          "contact",
+          "social-media"
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "MERN Stack Development (MongoDB, Express, React, Node.js)",
+    "Data Science & Forecasting (Pandas, Facebook Prophet)",
+    "AI & Voice Cloning (Python, PyTorch)",
+    "Video Editing & Content Creation (DaVinci Resolve)",
+    "Systems Analysis & Logistics Optimization"
+  ],
+  "publicApiSurface": [
+    "georgevalle@outlook.com.ar",
+    "https://x.com/GeorgeValleDev",
+    "https://portfolio-react-js-rho.vercel.app/",
+    "https://www.linkedin.com/in/valle-jorge/"
+  ]
+}
